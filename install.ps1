@@ -29,17 +29,10 @@ if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administ
   Write-Host "[ * ] Installing Boxstarter"
   iex ((New-Object System.Net.WebClient).DownloadString('http://boxstarter.org/bootstrapper.ps1')); get-boxstarter -Force
 
-  # Get user credentials for autologin during reboots
-  Write-Host "[ * ] Getting user credentials ..."
+  $passwd=ConvertTo-SecureString -String "vagrant" -AsPlainText -Force
+  $cred=New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $env:username, $passwd
 
-  Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds" -Name "ConsolePrompting" -Value $True
-  $cred=Get-Credential $env:username
-
-  if ($cred) {
-      Install-BoxstarterPackage -PackageName https://raw.githubusercontent.com/fireeye/flare-vm/master/flarevm_malware.ps1 -Credential $cred
-  } else {
-      Install-BoxstarterPackage -PackageName https://raw.githubusercontent.com/fireeye/flare-vm/master/flarevm_malware.ps1
-  }
+  Install-BoxstarterPackage -PackageName https://raw.githubusercontent.com/fireeye/flare-vm/master/flarevm_malware.ps1 -Credential $cred
 
 } else {
   Write-Host "[ERR] Please run this script as administrator"
