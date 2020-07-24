@@ -265,15 +265,8 @@ if (-Not (((Get-WmiObject -class Win32_OperatingSystem).Version -eq "6.1.7601") 
 }
 
 # Get user credentials for autologin during reboots
-Write-Host "[+] Getting user credentials ..."
-Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\PowerShell\1\ShellIds" -Name "ConsolePrompting" -Value $True
-if ([string]::IsNullOrEmpty($password)) {
-  $cred=Get-Credential $env:username
-} else {
-  $spasswd=ConvertTo-SecureString -String $password -AsPlainText -Force
-  $cred=New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $env:username, $spasswd
-}
-
+$spasswd=ConvertTo-SecureString -String "vagrant" -AsPlainText -Force
+$cred=New-Object -TypeName "System.Management.Automation.PSCredential" -ArgumentList $env:username, $spasswd
 
 
 Write-Host "[+] Installing Boxstarter"
